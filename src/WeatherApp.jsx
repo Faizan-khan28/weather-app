@@ -4,28 +4,66 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { useState } from "react";
 
-export default function () {
+const API_URL = "http://api.openweathermap.org/data/2.5/weather";
+const API_Key = "d87b79daa8037847eed15b798c3a30e4";
 
-  let [city, setCity] = useState("")
+export default function WeatherApp () {
+
+  let [city, setCity] = useState("");
+  let [weatherinfo, setweatherInfo] = useState({
+    name: "City Name",
+    temp: 0,
+    Humidity: 0,
+    mintem: 0,
+    maxtem: 0,
+    feelslike: 0,
+    weather: "Weather type"
+  });
+
+  let weatherData = async() => {
+    let response = await fetch(`${API_URL}?q=${city}&appid=${API_Key}&units=metric`);
+    let jsonResponse = await response.json();
+    console.log(jsonResponse)
+
+    let result = {
+      name: jsonResponse.name,
+      temp: jsonResponse.main.temp,
+      Humidity: jsonResponse.main.humidity,
+      mintem: jsonResponse.main.temp_min,
+      maxtem: jsonResponse.main.temp_max,
+      feelslike: jsonResponse.main.feels_like,
+      weather: jsonResponse.weather[0].description,
+    }
+    console.log(result)
+    return result;
+  }
 
   let handleChange = (event) => {
     setCity(event.target.value);
   }
 
-  let submit = (event) => {
+  let submit = async (event) => {
     event.preventDefault();
     setCity("")
     console.log(city);
+    let newinfo = await weatherData();
+    updateInfo(newinfo);
+
+  }
+
+  let updateInfo = (newinfo) => {
+    setweatherInfo(newinfo);
+    console.log(newinfo)
   }
 
   return (
-    <div className="flex justify-center items-center h-[100vh] w-[100vw] ">
+    <div className="flex justify-center items-center h-[100vh] w-[100vw] bg-[#cfe8fc] ">
       <Container className="flex justify-center">
         <Box
-          sx={{ bgcolor: "#cfe8fc", height: "500px", width: "400px" }}
-          className="flex items-center gap-9 rounded-md  flex-col"
+          sx={{ bgcolor: "#cfe8fc" }}
+          className="flex items-center gap-6 flex-col"
         >
-          <h1 className="font-medium text-[40px]">Weather App</h1>
+          <h1 className="font-medium text-[40px]">Weather App By Faizan</h1>
           <form onSubmit={submit}>
             <div>
               <TextField
@@ -49,12 +87,13 @@ export default function () {
           </form>
 
           <div className="text-[18px] font-medium">
-            <h1 className="text-[40px] text-center">Delhi</h1>
-            <p>temp:</p>
-            <p>Humidity:</p>
-            <p>Min-Tem:</p>
-            <p>Max-Tem:</p>
-            <p>Feels Like cold</p>
+            <h1 className="text-[40px] text-center">City: {weatherinfo.name}</h1>
+            <p>temp: {weatherinfo.temp}&deg;C</p>
+            <p>Humidity: {weatherinfo.Humidity}&deg;C</p>
+            <p>Min-Tem: {weatherinfo.mintem}&deg;C</p>
+            <p>Max-Tem: {weatherinfo.maxtem}&deg;C</p>
+            <p>Feels Like: {weatherinfo.feelslike}&deg;C</p>
+            <p>Weather: {weatherinfo.weather}</p>
           </div>
         </Box>
       </Container>
