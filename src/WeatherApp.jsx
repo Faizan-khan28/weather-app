@@ -21,10 +21,11 @@ export default function WeatherApp () {
   });
 
   let weatherData = async() => {
+
     let response = await fetch(`${API_URL}?q=${city}&appid=${API_Key}&units=metric`);
     let jsonResponse = await response.json();
     console.log(jsonResponse)
-
+   
     let result = {
       name: jsonResponse.name,
       temp: jsonResponse.main.temp,
@@ -44,8 +45,7 @@ export default function WeatherApp () {
 
   let submit = async (event) => {
     event.preventDefault();
-    setCity("")
-    console.log(city);
+    setCity("");
     let newinfo = await weatherData();
     updateInfo(newinfo);
 
@@ -63,7 +63,7 @@ export default function WeatherApp () {
           sx={{ bgcolor: "#cfe8fc" }}
           className="flex items-center gap-6 flex-col"
         >
-          <h1 className="font-medium text-[40px]">Weather App By Faizan</h1>
+          <h1 className="font-medium text-[40px] bg-black text-white pl-5 pr-5 pt-4 pb-4 rounded-md">Weather App By Faizan</h1>
           <form onSubmit={submit}>
             <div>
               <TextField
@@ -87,7 +87,7 @@ export default function WeatherApp () {
           </form>
 
           <div className="text-[18px] font-medium">
-            <h1 className="text-[40px] text-center">City: {weatherinfo.name}</h1>
+            <h1 className="text-[40px] text-center flex">City: {weatherinfo.name}</h1>
             <p>temp: {weatherinfo.temp}&deg;C</p>
             <p>Humidity: {weatherinfo.Humidity}&deg;C</p>
             <p>Min-Tem: {weatherinfo.mintem}&deg;C</p>
